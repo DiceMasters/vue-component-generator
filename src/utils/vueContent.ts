@@ -44,7 +44,7 @@ function options (componentName: string, lang: TComponentLang, preprocessor: TCo
   const trimmedPrefix = prefix.trim()
   const classPrefix = trimmedPrefix ? `${trimmedPrefix}-` : ''
 
-  const script = `<script${langAttr}>\n\texport default {\n\t\t\n}\n</script>`
+  const script = `<script${langAttr}>\nexport default {\n\t\n}\n</script>`
   const template = `<template>\n\t<div class="${classPrefix}${ kebabize(componentName) }"></div>\n</template>`
   const style = `<style${preprocessorAttr} src="./style.${preprocessor}"></style>`
 
@@ -57,7 +57,7 @@ function vcc (componentName: string, lang: TComponentLang, preprocessor: TCompon
   const trimmedPrefix = prefix.trim()
   const classPrefix = trimmedPrefix ? `${trimmedPrefix}-` : ''
 
-  const script = `<script ${langAttr}>\n\timport { Vue, Component } from 'vue-propert-decorator'\n\n@Component\nexport default class ${componentName} extends Vue {}\n</script>`
+  const script = `<script ${langAttr}>\nimport { Vue, Component } from 'vue-propert-decorator'\n\n@Component\nexport default class ${componentName} extends Vue {}\n</script>`
   const template = `<template>\n\t<div class="${classPrefix}${ kebabize(componentName) }"></div>\n</template>`
   const style = `<style${preprocessorAttr} src="./style.${preprocessor}"></style>`
 
