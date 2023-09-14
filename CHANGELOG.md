@@ -23,3 +23,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 
 - Файловая структура комманд
+
+## [0.0.3] - 2023-09-15
+
+### Added
+
+- Иконка для маркетплейса
+
+### Fixed
+
+- Табы и префиксы
