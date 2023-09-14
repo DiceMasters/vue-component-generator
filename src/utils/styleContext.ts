@@ -9,5 +9,5 @@ export function generateStyleContent (componentName: string, preprocessor: TComp
     return `.${ _p + kebabize(componentName) } \n\t\n`
   }
 
-  return `.c-${_p + kebabize(componentName) } {\n\t\n}`
+  return `.${_p + kebabize(componentName) } {\n\t\n}`
 }
