@@ -58,6 +58,11 @@
           "type": "string",
           "default": "c",
           "description": "Префикс для CSS классов"
+        },
+        "vcg.styles-in-tag": {
+          "type": "boolean",
+          "default": false,
+          "description": "Не использовать style файлы в угоду стилям в <style>"
         }
       }
     }
