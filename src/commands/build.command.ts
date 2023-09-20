@@ -4,10 +4,12 @@ import * as path from 'path'
 
 import { TComponentPreprocessor } from '../types'
 
-import { GeneratorController } from '../services/generator/generator.service'
+import { GeneratorService } from '../services/generator/generator.service'
+import { prefixParse } from '../utils/prefixParse'
 
 export default async function (dir: string) {
   const config = vscode.workspace.getConfiguration('vcg'),
+        configPrefix: string = config.get('prefix') ?? 'c',
         configPreprocessor: TComponentPreprocessor | undefined = config.get('preprocessor'),
         configTagStyles: boolean | undefined = config.get('styles-in-tag')
 
@@ -18,15 +20,24 @@ export default async function (dir: string) {
   })
 
   if (!componentTitle && !componentTitle?.trim()) {
-    vscode.window.showInformationMessage('Не указано имя компонента...')
+    vscode.window.showErrorMessage('Не указано имя компонента...')
   }
 
   if (componentTitle) {
-    let generator: GeneratorController | undefined = new GeneratorController(config, componentTitle)
-    const componentPath = path.join(dir, componentTitle)
+    const parser = prefixParse(configPrefix, componentTitle)
+
+    if (parser instanceof Error) {
+      vscode.window.showErrorMessage(parser.message)
+
+      return
+    }
+
+    const componentPath = path.join(dir, parser.componentName)
+
+    let generatorService: GeneratorService | undefined = new GeneratorService(config, parser.componentName, parser.prefix)
 
     if (fs.existsSync(componentPath)) {
-      vscode.window.showInformationMessage('Директория уже существует...')
+      vscode.window.showErrorMessage('Директория уже существует...')
 
       return
     }
@@ -37,11 +48,11 @@ export default async function (dir: string) {
       vscode.workspace.fs.createDirectory(componentDir)
       vscode.workspace.fs.writeFile(
         vscode.Uri.file(`${ componentPath }/index.ts`),
-        new Uint8Array(new Buffer(generator.index, 'utf-8'))
+        new Uint8Array(new Buffer(generatorService.index, 'utf-8'))
       )
       vscode.workspace.fs.writeFile(
-        vscode.Uri.file(`${ componentPath }/${ componentTitle }.vue`),
-        new Uint8Array(new Buffer(generator.component, 'utf-8'))
+        vscode.Uri.file(`${ componentPath }/${ parser.componentName }.vue`),
+        new Uint8Array(new Buffer(generatorService.component, 'utf-8'))
       )
 
       if (!configTagStyles) {
@@ -49,15 +60,15 @@ export default async function (dir: string) {
 
         vscode.workspace.fs.writeFile(
           vscode.Uri.file(`${ componentPath }/style.${styleExtension}`),
-          new Uint8Array(new Buffer(generator.style, 'utf-8'))
+          new Uint8Array(new Buffer(generatorService.style, 'utf-8'))
         )
       }
     } catch (error) {
-      vscode.window.showInformationMessage('Ошибка создание файлов, мб причина в правах запуска VS Code?')
+      vscode.window.showErrorMessage('Ошибка создание файлов, мб причина в правах запуска VS Code?')
 
       throw error
     } finally {
-      generator = undefined
+      generatorService = undefined
     }
   }
 }

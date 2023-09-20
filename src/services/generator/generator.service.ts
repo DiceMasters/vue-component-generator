@@ -8,7 +8,7 @@ import {
 } from '../../types'
 import { IGeneratorService } from './generator.interface'
 
-export class GeneratorController implements IGeneratorService {
+export class GeneratorService implements IGeneratorService {
   config: vscode.WorkspaceConfiguration
   name: string
   kebabName: string
@@ -23,14 +23,14 @@ export class GeneratorController implements IGeneratorService {
   _lang: TComponentLang | undefined
   _tagStyles: boolean | undefined
 
-  constructor (config: vscode.WorkspaceConfiguration, name: string) {
+  constructor (config: vscode.WorkspaceConfiguration, name: string, prefix: string) {
     this.config = config
     this.name = name
     this.kebabName = kebabize(name)
 
     this._syntax = config.get('syntax') ?? 'composition',
     this._preprocessor = config.get('preprocessor') ?? 'scss',
-    this._prefix = config.get('prefix') ?? 'c-',
+    this._prefix = prefix,
     this._lang = config.get('lang') ?? 'typescript',
     this._tagStyles = config.get('styles-in-tag')
 
