@@ -6,11 +6,10 @@ export default async function (ctx: any) {
   const isExist = fs.existsSync(parsed)
 
   if (!isExist) {
-    vscode.window.showInformationMessage('Выбранная директория не существует...')
+    vscode.window.showErrorMessage('Выбранная директория не существует...')
 
     return
   }
 
-  vscode.window.showInformationMessage('Работаем дальше')
   vscode.commands.executeCommand('vue-component-generator.build', parsed)
 }
